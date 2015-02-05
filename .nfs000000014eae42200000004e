@@ -1,0 +1,8 @@
+import json
+
+json_data = open('activite.json')
+data = json.load(json_data)
+#print(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
+
+for num in data[ActCode]:
+		print(data[num])

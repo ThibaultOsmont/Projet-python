@@ -1,9 +1,0 @@
-import json
-
-json_data = open('activite.json')
-data = json.load(json_data)
-#print(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
-
-for activite in data[data]:
-	for value in activite:
-		print(value)

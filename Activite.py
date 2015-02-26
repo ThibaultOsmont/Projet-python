@@ -1,31 +1,16 @@
 class Activite(object):
 
-	ActCode
-	ActLib
-	ComInsee
-	ComLib
-	EquActivitePraticable
-	EquActivitePratique
-	EquActiviteSalleSpe
-	EquNbEquIdentique
-	EquipementId
-
-	def __init__(self, ActCode, ActLib, ActNivLib, ComInsee, ComLib, EquActivitePraticable, EquActivitePratique, EquActiviteSalleSpe, EquNbEquIdentique, EquipementId):
+	def __init__(self, ActCode):
 		self.ActCode = ActCode
-		self.ActLib = ActLib
-		self.ComInsee = ComInsee
-		self.ComLib = ComLib
-		self.EquActivitePraticable = EquActivitePraticable
-		self.EquActivitePratique = EquActivitePratique
-		self.EquActiviteSalleSpe = EquActiviteSalleSpe
-		self.EquNbEquIdentique = EquNbEquIdentique
-		self.EquipementId = EquipementId
 
 	def getActCode(self):
 		return self.ActCode	
 
 	def getActLib(self):
 		return self.ActLib	
+
+	def getActNivLib(self):
+		return self.ActNivLib	
 
 	def getComInsee(self):
 		return self.ComInsee	
@@ -49,28 +34,34 @@ class Activite(object):
 		return self.EquipementId	
 
 	def setActCode(self, newAC):
-		return self.ActCode	= newAC
+		self.ActCode	= newAC
 
 	def setActLib(self, newAL):
-		return self.ActLib = newAL	
+		self.ActLib = newAL	
+
+	def getActNivLib(self, newAL):
+		self.ActNivLib	= newAL	
 
 	def setComInsee(self, newCI):
-		return self.ComInsee = newCI	
+		self.ComInsee = newCI	
 
 	def setLib(self, newCL):
-		return self.ComLib = newCL	
+		self.ComLib = newCL	
 
 	def setEquActivitePraticable(self, newEAP):
-		return self.EquActivitePraticable = newEAP	
+		self.EquActivitePraticable = newEAP	
 
 	def setEquActivitePratique(self, newEAP):
-		return self.EquActivitePratique	= newEAP
+		self.EquActivitePratique = newEAP
 
 	def setEquActiviteSalleSpe(self, newEAS):
-		return self.EquActiviteSalleSpe	= newEAS
+		self.EquActiviteSalleSpe = newEAS
 
 	def setEquNbEquIdentique(self, newENI):
-		return self.EquNbEquIdentique = newENI	
+		self.EquNbEquIdentique = newENI	
 
 	def setEquipementId(self, newEI):
-		return self.EquipementId = newEI			
+		self.EquipementId = newEI			
+
+	def __repr__(self):
+		return "{} - {} - {} - {} - {} - {} - {} - {} - {}".format(self.ActCode, self.ActLib, self.ComInsee, self.ComLib, self.EquActivitePraticable, self.EquActivitePratique, self.EquActiviteSalleSpe, self.EquNbEquIdentique, self.EquipementId)

@@ -1,14 +1,14 @@
 import json
 import sqlite3
-from Activite import Activite
-from installation import Installation
-from equipement import Equipement
+from Classes.Activite import Activite
+from Classes.installation import Installation
+from Classes.equipement import Equipement
 
-json_data = open('activite.json')
+json_data = open('jSON/activite.json')
 data = json.load(json_data)
 #print(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
 #realData = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
-conn1 = sqlite3.connect('activity.db')
+conn1 = sqlite3.connect('DataBases/activity.db')
 c1 = conn1.cursor()
 c1.execute('''CREATE TABLE IF NOT EXISTS activity
              (ActCode text, ActLib text, ComInsee text, ComLib text,EquActivitePraticable text,
@@ -31,10 +31,10 @@ for activity_data in data["data"]:
 conn1.commit()
 conn1.close()
 
-json_data_2 = open('installations.json')
+json_data_2 = open('jSON/installations.json')
 data2 = json.load(json_data_2)
 
-conn2 = sqlite3.connect('installations.db')
+conn2 = sqlite3.connect('DataBases/installations.db')
 c2 = conn2.cursor()
 c2.execute('''CREATE TABLE IF NOT EXISTS installations
              (ComInsee text, ComLib text, InsAccessibiliteAucun text, InsAccessibiliteHandiMoteur text,InsAccessibiliteHandiSens text,
@@ -56,10 +56,10 @@ for installation_data in data2["data"]:
 conn2.commit()
 conn2.close()
 
-json_data_3 = open('equipement_fixed.json')
+json_data_3 = open('jSON/equipement_fixed.json')
 data3 = json.load(json_data_3)
 
-conn3 = sqlite3.connect('equipement.db')
+conn3 = sqlite3.connect('DataBases/equipement.db')
 c3 = conn3.cursor()
 c3.execute('''CREATE TABLE IF NOT EXISTS equipement
              (ComInsee text, ComLib text, EquipementId text, AnneeServiceLib text, EquipementFiche text)''')

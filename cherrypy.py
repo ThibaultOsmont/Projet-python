@@ -13,7 +13,9 @@ class WebManager(object):
 			Vous aurez le choix de la base de données dont vous voulez voir les informations
 			Ainsi que du service que vous voulez (Connaitre le nombre d'entrées ou toutes les montrer)
 		"""
-		return """<script type='text/javascript'>
+		return """
+
+		<script type='text/javascript'>
 			function redirect() { 
 				var method = document.getElementById('truc').value; 
 				var base = document.getElementById('base').value; 
@@ -52,8 +54,10 @@ class WebManager(object):
 			<label for='search_ville'>Rechercher une ville: </label> 
 			<input type='text' id='search_ville' placeholder='Ex: Nantes'>
 			<label for='search_activity'>Rechercher une activité à pratiquer: </label> 
+
 			<input type='text' id='search_activity' placeholder='Ex: Football'>
 			<input type='button' value='Go !' onclick='rechercherActVilles()'>
+		</form>	
 			"""
 
 	@cherrypy.expose
@@ -155,7 +159,14 @@ class WebManager(object):
 		some_list = list()
 		for row in c1.execute('''SELECT ComLib FROM installations ORDER BY ComLib'''):
 			if row not in some_list:
-				res = res + "<li><a href='/show_act_ville/?ville='+str(row[0])>"+str(row[0])+"</a></li>"
+				res = res + """
+					<input type="hidden" id="ville" value="""+str(row[0])+""">
+					<li>
+					<p  onclick="
+						var ville = document.getElementById('ville').value;
+						alert(ville);
+						document.location.href='/show_act_ville/?ville='+ville;
+					">""" +str(row[0])+"</p></li>"
 				some_list.append(row)
 		res = res + "</ul>"		
 		return res;	

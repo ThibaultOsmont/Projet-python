@@ -14,7 +14,6 @@ class WebManager(object):
 			Ainsi que du service que vous voulez (Connaitre le nombre d'entrées ou toutes les montrer)
 		"""
 		return """
-
 		<script type='text/javascript'>
 			function redirect() { 
 				var method = document.getElementById('truc').value; 
@@ -140,9 +139,17 @@ class WebManager(object):
 		"""
 		conn1 = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
 		c1 = conn1.cursor()
-		res = "<table border='1' style='width:100%'>"
+		res = """<table border='1'>
+			<tr>
+				<td>Code Activité</td>
+				<td>Activité</td>
+				<td>Code Postal</td>
+				<td>Ville</td>
+				<td>ID Équipement</td>
+			</tr>	
+		"""
 		for row in c1.execute('''SELECT * FROM activities ORDER BY ComInsee'''):
-			res = res + "<tr><td>"+str(row) + "</td></tr>"
+			res = res + "<tr><td>"+str(row[0]) + "</td><td>"+str(row[1])+"</td><td>"+str(row[2])+"</td><td>"+str(row[3])+"</td><td>"+str(row[4])+"</td></tr>"
 		res = res + "</table>"
 
 		return res;		
@@ -155,7 +162,7 @@ class WebManager(object):
 
 		conn1 = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
 		c1 = conn1.cursor()
-		res = "<ul>";
+		res = "Cliquez sur une ville pour en visualiser les activités disponnibles: <br/><ul>";
 		some_list = list()
 		for row in c1.execute('''SELECT ComLib FROM installations ORDER BY ComLib'''):
 			if row not in some_list:
@@ -164,7 +171,6 @@ class WebManager(object):
 					<li>
 					<p  onclick="
 						var ville = document.getElementById('ville').value;
-						alert(ville);
 						document.location.href='/show_act_ville/?ville='+ville;
 					">""" +str(row[0])+"</p></li>"
 				some_list.append(row)
@@ -176,7 +182,7 @@ class WebManager(object):
 		conn1 = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
 		c1 = conn1.cursor()
 		res = "Activités disponnibles pour "+str(ville)+" :<br/><ul>"
-		for row in c1.execute("SELECT ActLib FROM activities WHERE ActLib = '"+str(ville)+"'"):
+		for row in c1.execute("SELECT ActLib FROM activities WHERE ComLib = "+ str(ville)+""):
 			res = res + "<li>" + str(row[0]) + "</li>"
 		res = res + "</ul>"	
 		return res;

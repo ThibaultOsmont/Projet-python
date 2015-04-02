@@ -4,74 +4,89 @@ from Classes.Activite import Activite
 from Classes.installation import Installation
 from Classes.equipement import Equipement
 
-json_data = open('jSON/activite.json')
-data = json.load(json_data)
-#print(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
-#realData = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
-conn1 = sqlite3.connect('DataBases/activity.db')
-c1 = conn1.cursor()
-c1.execute('''CREATE TABLE IF NOT EXISTS activity
-             (ActCode text, ActLib text, ComInsee text, ComLib text,EquActivitePraticable text,
-             EquActivitePratique text, EquActiviteSalleSpe text, EquNbEquIdentique text, EquipementId text)''')
+#Ouverture de la connexion SQL et des fichiers jSON
+json_data_act = open('jSON/activite.json')
+data_act = json.load(json_data_act)
 
-for activity_data in data["data"]:
-	
-	values = [activity_data["ActCode"],
-				activity_data["ActLib"],
-				activity_data["ComInsee"],
-				activity_data["ComLib"],
-				activity_data["EquActivitePraticable"],
-				activity_data["EquActivitePratique"],
-				activity_data["EquActiviteSalleSpe"],
-				activity_data["EquNbEquIdentique"],
-				activity_data["EquipementId"]
-		]
-#activity_data["ActCode"], activity_data["ActLib"], activity_data["ComInsee"], activity_data["ComLib"], activity_data["EquActivitePraticable"], activity_data["EquActivitePratique"], activity_data["EquActivitePratique"],activity_data["EquActivitePratique"], activity_data["EquActiviteSalleSpe"], activity_data["EquActiviteSalleSpe"], 	activity_data["EquNbEquIdentique"], activity_data["EquipementId"]
-	c1.execute('''INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', values)
-conn1.commit()
-conn1.close()
+json_data_insta = open('jSON/installations.json')
+data_insta = json.load(json_data_insta)
 
-json_data_2 = open('jSON/installations.json')
-data2 = json.load(json_data_2)
+json_data_equip = open('jSON/equipement_fixed.json')
+data_equip = json.load(json_data_equip)
 
-conn2 = sqlite3.connect('DataBases/installations.db')
-c2 = conn2.cursor()
-c2.execute('''CREATE TABLE IF NOT EXISTS installations
-             (ComInsee text, ComLib text, InsAccessibiliteAucun text, InsAccessibiliteHandiMoteur text,InsAccessibiliteHandiSens text,
-             InsCodePostal text, InsDateMaj text, InsEmpriseFonciere text, InsGardiennee text, InsLibelleVoie text)''')
+connexion = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
 
-for installation_data in data2["data"]:
-	val = [installation_data["ComInsee"], 
-				installation_data["ComLib"],
-				installation_data["InsAccessibiliteAucun"],
-				installation_data["InsAccessibiliteHandiMoteur"],
-				installation_data["InsAccessibiliteHandiSens"],
-				installation_data["InsCodePostal"],
-				installation_data["InsDateMaj"],
-				installation_data["InsEmpriseFonciere"],
-				installation_data["InsGardiennee"],
-				installation_data["InsLibelleVoie"]
+print("Création de la table activities...")
+c1 = connexion.cursor()
+c1.execute('''CREATE TABLE IF NOT EXISTS activities
+             (ActCode text, ActLib text, 
+             ComInsee text, ComLib text,
+             EquipementId text)''')
+
+print("OK. Insertion des éléments dans la table activities...")
+for activity_data in data_act["data"]:
+	myAct = Activite(activity_data["ActCode"])
+	myAct.setActLib(activity_data["ActLib"])
+	myAct.setComInsee(activity_data["ComInsee"])
+	myAct.setComLib(activity_data["ComLib"])
+	myAct.setEquipementId(activity_data["EquipementId"])
+
+	values = [
+		myAct.getActCode(), 
+		myAct.getActLib(), 
+		myAct.getComInsee(), 
+		myAct.getComLib(), 
+		myAct.getEquipementId()
 	]
-	c2.execute('''INSERT INTO installations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', val)
-conn2.commit()
-conn2.close()
 
-json_data_3 = open('jSON/equipement_fixed.json')
-data3 = json.load(json_data_3)
+	c1.execute('''INSERT INTO activities VALUES (?, ?, ?, ?, ?)''', values)
 
-conn3 = sqlite3.connect('DataBases/equipement.db')
-c3 = conn3.cursor()
-c3.execute('''CREATE TABLE IF NOT EXISTS equipement
-             (ComInsee text, ComLib text, EquipementId text, AnneeServiceLib text, EquipementFiche text)''')
+print("OK. Création de la table installations...")
+c1.execute('''CREATE TABLE IF NOT EXISTS installations
+             (ComInsee text, ComLib text, InsCodePostal text,
+             	Latitude text, Longitude text)''')
 
-for equipement_data in data3["data"]:
-	vals = [
-			equipement_data["ComInsee"],
-			equipement_data["ComLib"],
-			equipement_data["EquipementId"],
-			equipement_data["AnneeServiceLib"],
-			equipement_data["EquipementFiche"]
+print("OK. Insertion des éléments dans la table installations...")
+for installation_data in data_insta["data"]:
+	myInsta = Installation(installation_data["ComInsee"])
+	myInsta.setComLib(installation_data["ComLib"])
+	myInsta.setCodePostal(installation_data["InsCodePostal"])
+	myInsta.setLatitude(installation_data["Latitude"])
+	myInsta.setLongitude(installation_data["Longitude"])
+	myInsta.setl(installation_data["_l"])
+	myInsta.setGeo(installation_data["geo"])
+
+	values = [
+		myInsta.getComInsee(), 
+		myInsta.getComLib(), 
+		myInsta.getCodePostal(), 
+		myInsta.getLatitude(), 
+		myInsta.getLongitude(), 
 	]
-	c3.execute('''INSERT INTO equipement VALUES (?, ?, ?, ?, ?)''', vals)
-conn3.commit()
-conn3.close()	
+
+	c1.execute('''INSERT INTO installations VALUES (?, ?, ?, ?, ?)''', values)
+
+print("OK. Création de la table equipement...")
+c1.execute('''CREATE TABLE IF NOT EXISTS equipement
+             (ComInsee text, ComLib text, EquipementId text,
+              EquipementFiche text)''')
+
+print("OK. Insertion des éléments dans la table equipement...")
+for equipement_data in data_equip["data"]:
+	myEquip = Equipement(equipement_data["ComInsee"])
+	myEquip.setComLib(equipement_data["ComLib"])
+	myEquip.setEquipementId(equipement_data["EquipementId"])
+	myEquip.setEquipementFiche(equipement_data["EquipementFiche"])
+
+	values = [
+		myEquip.getComInsee(), 
+		myEquip.getComLib(), 
+		myEquip.getEquipementId(), 
+		myEquip.getEquipementFiche()
+	]
+
+	c1.execute('''INSERT INTO equipement VALUES (?, ?, ?, ?)''', values)
+
+print("OK. Fermeture de la connexion.")
+connexion.commit()
+connexion.close()	

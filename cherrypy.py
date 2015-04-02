@@ -1,5 +1,4 @@
 import cherrypy
-import json
 import sqlite3 
  
 
@@ -62,7 +61,7 @@ class WebManager(object):
 		"""
 		Exposes the number of inputs in table equipement at localhost:8080/index_equip
 		"""	
-		conn1 = sqlite3.connect('equipement.db')
+		conn1 = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
 		c1 = conn1.cursor()
 		res = 0
 		for row in c1.execute('''SELECT * FROM equipement ORDER BY ComInsee'''):
@@ -74,10 +73,10 @@ class WebManager(object):
 		"""
 		Exposes the number of inputs in table installation at localhost:8080/index_insta
 		"""	
-		conn1 = sqlite3.connect('installation.db')
+		conn1 = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
 		c1 = conn1.cursor()
 		res = 0
-		for row in c1.execute('''SELECT * FROM installation ORDER BY ComInsee'''):
+		for row in c1.execute('''SELECT * FROM installations ORDER BY ComInsee'''):
 		 	res = res + 1
 		return "There are {0} items".format(res)	
 	
@@ -86,10 +85,10 @@ class WebManager(object):
 		"""
 		Exposes the number of inputs in table activity at localhost:8080/index_act
 		"""	
-		conn1 = sqlite3.connect('activity.db')
+		conn1 = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
 		c1 = conn1.cursor()
 		res = 0
-		for row in c1.execute('''SELECT * FROM activity ORDER BY ComInsee'''):
+		for row in c1.execute('''SELECT * FROM activities ORDER BY ComInsee'''):
 		 	res = res + 1
 		return "There are {0} items".format(res)			
 	 
@@ -98,7 +97,7 @@ class WebManager(object):
 		"""
 		Exposes entries in table equipement
 		"""
-		conn1 = sqlite3.connect('equipement.db')
+		conn1 = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
 		c1 = conn1.cursor()
 		res = """<table border='1'>
 			<tr>
@@ -121,11 +120,11 @@ class WebManager(object):
 		"""
 		Exposes the service at localhost:8080/show_all/
 		"""
-		conn1 = sqlite3.connect('installations.db')
+		conn1 = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
 		c1 = conn1.cursor()
 		res = "<table border='1' style='width:100%'> <tr><td>Numéro Insee</td> <td>Nom de la ville</td> <td>Code Postal</td></tr>"
 		for row in c1.execute('''SELECT * FROM installations ORDER BY ComInsee'''):
-			res = res + "<tr><td>"+str(row[0]) + "</td><td>"+ str(row[1]) + "</td><td>"+ str(row[5])+"</td></tr>"
+			res = res + "<tr><td>"+str(row[0]) + "</td><td>"+ str(row[1]) + "</td><td>"+ str(row[2])+"</td></tr>"
 		res = res + "</table>"
 
 		return res;		
@@ -135,10 +134,10 @@ class WebManager(object):
 		"""
 		Exposes the service at localhost:8080/show_all/
 		"""
-		conn1 = sqlite3.connect('activity.db')
+		conn1 = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
 		c1 = conn1.cursor()
 		res = "<table border='1' style='width:100%'>"
-		for row in c1.execute('''SELECT * FROM activity ORDER BY ComInsee'''):
+		for row in c1.execute('''SELECT * FROM activities ORDER BY ComInsee'''):
 			res = res + "<tr><td>"+str(row) + "</td></tr>"
 		res = res + "</table>"
 
@@ -150,23 +149,33 @@ class WebManager(object):
 		Exposes the service at localhost:8080/show_villes/
 		"""
 
-		conn1 = sqlite3.connect('installations.db')
+		conn1 = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
 		c1 = conn1.cursor()
 		res = "<ul>";
 		some_list = list()
 		for row in c1.execute('''SELECT ComLib FROM installations ORDER BY ComLib'''):
 			if row not in some_list:
-				res = res + "<li>"+str(row[0])+"</li>"
+				res = res + "<li><a href='/show_act_ville/?ville='+str(row[0])>"+str(row[0])+"</a></li>"
 				some_list.append(row)
 		res = res + "</ul>"		
 		return res;	
+
+	@cherrypy.expose
+	def show_act_ville(self, ville):
+		conn1 = sqlite3.connect('DataBases/SportEnLoireAtlantique.db')
+		c1 = conn1.cursor()
+		res = "Activités disponnibles pour "+str(ville)+" :<br/><ul>"
+		for row in c1.execute("SELECT ActLib FROM activities WHERE ActLib = '"+str(ville)+"'"):
+			res = res + "<li>" + str(row[0]) + "</li>"
+		res = res + "</ul>"	
+		return res;
 
 	@cherrypy.expose
 	def research_acts(self, ville, act):
 		"""
 		Exposes the researched activities in the researched city at localhost:8080/research_acts/?ville=&act= 
 		"""
-		conn1 = sqlite3.connect("activity.db")	
+		conn1 = sqlite3.connect("DataBases/SportEnLoireAtlantique.db")	
 		c1 = conn1.cursor()
 
 		res = """<table border='1'>
@@ -176,7 +185,7 @@ class WebManager(object):
 				<td>Nom de l'activité</td>
 			</tr>			
 		"""
-		for row in c1.execute("SELECT ComInsee, ComLib, ActLib FROM activity where ComLib='"+str(ville)+"'AND ActLib='"+str(act)+"' ORDER BY ComInsee"):
+		for row in c1.execute("SELECT ComInsee, ComLib, ActLib FROM activities where ComLib='"+str(ville)+"'AND ActLib='"+str(act)+"' ORDER BY ComInsee"):
 			res = res + "<tr><td>"+str(row[0])+"</td><td>"+str(row[1])+"</td><td>"+str(row[2])+"</td></tr>"
 		return res;	
 

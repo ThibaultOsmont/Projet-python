@@ -9,17 +9,11 @@ class Activite(object):
 	def getActLib(self):
 		return self.ActLib	
 
-	def getActNivLib(self):
-		return self.ActNivLib	
-
 	def getComInsee(self):
 		return self.ComInsee	
 
-	def getLib(self):
+	def getComLib(self):
 		return self.ComLib	
-
-	def getEquActivitePratique(self):
-		return self.EquActivitePratique	
 
 	def getEquipementId(self):
 		return self.EquipementId	
@@ -30,17 +24,11 @@ class Activite(object):
 	def setActLib(self, nouv):
 		self.ActLib	= nouv
 
-	def setActNivLib(self, nouv):
-		self.ActNivLib = nouv
-
 	def setComInsee(self, nouv):
 		self.ComInsee = nouv
 
-	def setLib(self, nouv):
+	def setComLib(self, nouv):
 		self.ComLib = nouv
-
-	def setEquActivitePratique(self, nouv):
-		self.EquActivitePratique	= nouv
 
 	def setEquipementId(self, nouv):
 		self.EquipementId= nouv	
